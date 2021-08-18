@@ -1,0 +1,18 @@
+<div th:fragment="footer">
+  <footer class="text-center text-lg-start bg-light">
+    <div class="container p-2 pb-0">
+      <section class="">
+        <p class="d-flex justify-content-center align-items-center">
+          <span class="me-2" th:text="'Hello, '"></span>
+          <span class="me-2" style="font-weight: bold" th:text="${user.getLogin()}"></span>
+          <a style="font-weight: bold" class="btn btn-sm btn-outline-secondary btn-rounded ms-3" href="/homepage"
+             >Back to main page</a>
+        </p>
+      </section>
+    </div>
+    <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
+      © 2021 Copyright:
+      <a class="text-dark text-decoration-none" href="https://github.com/S1ngleton1">GitHub - S1ngleton1</a>
+    </div>
+  </footer>
+</div>

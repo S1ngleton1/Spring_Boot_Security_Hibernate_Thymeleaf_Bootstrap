@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${postDetail.getTitle()}"></title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+        rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+        crossorigin="anonymous">
+</head>
+<body>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
+        integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
+        integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
+<br>
+<div class="container" style="padding-bottom: 30px">
+  <br>
+  <div th:insert="blocks/homepageHeader :: homepageHeader"></div>
+  <div class="container">
+    <div class="row g-5">
+      <div class="col-md-8">
+        <h3 class="pb-4 mb-4 fst-italic border-bottom">
+          From the <a th:href="'/homepage/thematic/' + ${postDetail.getCategory()}" th:id="'postCategory' + ${postDetail.getId()}" class="d-inline-block mb-2 text-decoration-none fst-italic fw-bold fs-5"
+                     th:text="${postDetail.getCategory()}">Category</a>
+        </h3>
+
+
+        <article class="blog-post">
+          <h2 class="blog-post-title" th:text="${postDetail.getTitle()}">Title</h2>
+          <span class="blog-post-meta" th:text="${#temporals.format(postDetail.getPostDate(), 'MMMM d, yyyy',
+                                new java.util.Locale('us', 'US')) + ' by '}">Date by</span>
+          <a th:href="'/homepage/user/' + ${postDetail.users[0].getLogin()}" th:text="${postDetail.users[0].getLogin()}">UserLogin</a>
+
+          <hr>
+          <p th:text="${postDetail.getFullDescription()}"></p>
+        </article>
+
+<!--          <p th:text="${#strings.contains(,'profile')}">Contain Profile</p>-->
+<!--        <th:block th:unless="${#strings.contains(${#httpServletRequest.requestURI},'profile')}">-->
+<!--          <p>Don't contain Profile</p>-->
+<!--        </th:block>-->
+        <div class="d-flex mb-3" th:with="request = ${#httpServletRequest.requestURI}">
+<!--          <p th:text="${request}"></p>-->
+          <th:block th:if="${#strings.contains(request,'profile')}">
+<!--            <p>profile</p>-->
+            <div class="p-2 "> <a class="btn btn-outline-primary" th:href="'/homepage/profile/' + ${page}">Back</a></div>
+          </th:block>
+          <th:block th:if="${#strings.contains(request,'thematic')}">
+<!--            <p>thematic</p>-->
+            <div class="p-2 "> <a class="btn btn-outline-primary" th:href="'/homepage/thematic/' +${topic} + '/'+ ${page}">Back</a></div>
+          </th:block>
+          <th:block th:if="${#strings.contains(request,'user')}">
+<!--            <p>user</p>-->
+            <div class="p-2 "> <a class="btn btn-outline-primary" th:href="'/homepage/user/' +${login} + '/'+ ${page}">Back</a></div>
+          </th:block>
+          <th:block th:unless="${#strings.contains(request,'profile')} or
+                              ${#strings.contains(request,'thematic')} or
+                              ${#strings.contains(request,'user')}">
+<!--            <p>main</p>-->
+            <div class="p-2 "> <a class="btn btn-outline-primary" th:href="'/homepage/' + ${page}">Back</a></div>
+          </th:block>
+
+<!--          <div th:if="${request.contains('/profile/')}" th:text="Contain Profile">Contain Profile</div>-->
+
+          <div class="ms-auto p-2 "> <a class="btn btn-outline-dark" href="/homepage">To main page</a></div>
+        </div>
+
+        <nav class="blog-pagination" aria-label="Pagination">
+
+        </nav>
+
+      </div>
+
+      <div class="col-md-4">
+
+        <div class="p-4 mb-3 bg-light rounded">
+          <h4 class="fst-italic">About</h4>
+          <p class="mb-0" th:text="${postDetail.getShortDescription()}"></p>
+        </div>
+          <th:block th:if="${totalItems > 0}">
+        <h3 class="pb-2 mb-2 mt-3 fst-italic border-bottom text-center"> Similar posts</h3>
+
+          <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 mt-3 shadow-sm h-md-250 position-relative" th:each="post: ${posts}">
+            <div class="col p-4 d-flex flex-column position-static">
+                <a th:id="'postCategoryRight' + ${post.getId()}" th:href="'/homepage/thematic/' + ${post.getCategory()}" class="d-inline-block mb-2 text-decoration-none fst-italic fw-bold fs-5"
+                   th:text="${post.getCategory()}">Category</a>
+                <h3 class="mb-0" th:text="${post.getTitle()}">Title</h3>
+                <div class="d-flex flex-row mb-3">
+                    <div class="p-2" th:text="${#temporals.format(post.getPostDate(), 'MMMM d, yyyy',
+                                new java.util.Locale('us', 'US')) + ' by '}">Date by</div>
+                    <div class="p-2 me-1"><a style="font-weight: bold" class="btn btn-sm btn-outline-secondary btn-rounded"
+                                             th:href="'/homepage/user/' + ${post.users[0].getLogin()}" th:text="${post.users[0].getLogin()}">UserLogin</a></div>
+                </div>
+                <p class="card-text mb-auto" th:text="${post.getShortDescription()}">ShortDescription</p>
+
+                <div th:with="request = ${#httpServletRequest.requestURI}">
+                    <th:block th:if="${#strings.contains(request,'profile')}">
+                        <a class="text-dark fw-bold text-decoration-none"
+                           th:href="'/homepage/profile/' + ${post.getId()} + '/' + ${page} + '/' + ${currentPage}">Continue reading...</a>
+                    </th:block>
+                    <th:block th:if="${#strings.contains(request,'thematic')}">
+                        <a class="text-dark fw-bold text-decoration-none"
+                           th:href="'/homepage/thematic/' + ${post.getCategory()} + '/' + ${post.getId()} + '/' + ${page} + '/' + ${currentPage}">Continue reading...</a>
+                    </th:block>
+                    <th:block th:if="${#strings.contains(request,'user')}">
+                        <a class="text-dark fw-bold text-decoration-none"
+                           th:href="'/homepage/user/' + ${login} + '/' + ${post.getId()} + '/' + ${page} + '/' + ${currentPage}">Continue reading...</a>
+                    </th:block>
+                    <th:block th:unless="${#strings.contains(request,'profile')} or
+                                  ${#strings.contains(request,'thematic')} or
+                                  ${#strings.contains(request,'user')}">
+                        <a class="text-dark fw-bold text-decoration-none" th:href="'/homepage/' + ${post.getId()} + '/' + ${page} + '/' + ${currentPage}">
+                            Continue reading...</a>
+                    </th:block>
+
+                </div>
+
+            </div>
+          </div>
+
+          <div style="margin-top: 15px" class="text-center" th:if="${totalPages > 1}" th:with="request = ${#httpServletRequest.requestURI}">
+              <nav aria-label="..." >
+                  <ul class="pagination justify-content-center flex-wrap">
+                      <li th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled'}">
+                          <th:block th:if="${#strings.contains(request,'profile')}">
+                            <a class="page-link" th:href="@{'/homepage/profile/' +${postDetail.getId()} + '/' + ${page} + '/' + '1'}">First</a>
+                          </th:block>
+                          <th:block th:if="${#strings.contains(request,'thematic')}">
+                              <a class="page-link" th:href="@{'/homepage/thematic/' +${postDetail.getCategory()} + '/' +${postDetail.getId()} + '/' + ${page} + '/' + '1'}">First</a>
+                          </th:block>
+                          <th:block th:if="${#strings.contains(request,'user')}">
+                              <a class="page-link" th:href="@{'/homepage/user/' +${login} + '/' +${postDetail.getId()} + '/' + ${page} + '/' + '1'}">First</a>
+                          </th:block>
+                          <th:block th:unless="${#strings.contains(request,'profile')} or
+                              ${#strings.contains(request,'thematic')} or
+                              ${#strings.contains(request,'user')}">
+                              <a class="page-link" th:href="@{'/homepage/' +${postDetail.getId()} + '/' + ${page} + '/' + '1'}">First</a>
+                          </th:block>
+                      </li>
+                      <li th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled'}">
+                          <th:block th:if="${#strings.contains(request,'profile')}">
+                              <a class="page-link" th:href="@{'/homepage/profile/' +${postDetail.getId()} + '/' + ${page} + '/' + ${currentPage - 1}}">Previous</a>
+                          </th:block>
+                          <th:block th:if="${#strings.contains(request,'thematic')}">
+                              <a class="page-link" th:href="@{'/homepage/thematic/' +${postDetail.getCategory()} + '/'  + ${postDetail.getId()} + '/' + ${page} + '/' + ${currentPage - 1}}">Previous</a>
+                          </th:block>
+                          <th:block th:if="${#strings.contains(request,'user')}">
+                              <a class="page-link" th:href="@{'/homepage/user/' +${login} + '/' +${postDetail.getId()} + '/' + ${page} + '/' + ${currentPage - 1}}">Previous</a>
+                          </th:block>
+                          <th:block th:unless="${#strings.contains(request,'profile')} or
+                              ${#strings.contains(request,'thematic')} or
+                              ${#strings.contains(request,'user')}">
+                              <a class="page-link" th:href="@{'/homepage/' +${postDetail.getId()} + '/' + ${page} + '/' + ${currentPage - 1}}">Previous</a>
+                          </th:block>
+
+
+                      </li>
+
+                      <th:block th:if="${totalPages<=10}">
+                          <div class="page-item" th:each="i: ${#numbers.sequence(1, totalPages)}">
+                              <li class="page-item" th:classappend="${currentPage==i} ? 'active' : ''" aria-current="page" >
+                                  <th:block th:if="${#strings.contains(request,'profile')}">
+                                      <a class="page-link" th:href="@{'/homepage/profile/' +${postDetail.getId()} + '/' + ${page} + '/' + ${i}}">[[${i}]]</a>
+                                  </th:block>
+                                  <th:block th:if="${#strings.contains(request,'thematic')}">
+                                      <a class="page-link" th:href="@{'/homepage/thematic/' +${postDetail.getCategory()} + '/' +${postDetail.getId()} + '/' + ${page} + '/' + ${i}}">[[${i}]]</a>
+                                  </th:block>
+                                  <th:block th:if="${#strings.contains(request,'user')}">
+                                      <a class="page-link" th:href="@{'/homepage/user/' +${login} + '/' +${postDetail.getId()} + '/' + ${page} + '/' + ${i}}">[[${i}]]</a>
+                                  </th:block>
+                                  <th:block th:unless="${#strings.contains(request,'profile')} or
+                              ${#strings.contains(request,'thematic')} or
+                              ${#strings.contains(request,'user')}">
+                                      <a class="page-link" th:href="@{'/homepage/' +${postDetail.getId()} + '/' + ${page} + '/' + ${i}}">[[${i}]]</a>
+                                  </th:block>
+                              </li>
+                          </div>
+                      </th:block>
+
+                      <th:block th:if="${totalPages>10}">
+                          <th:block th:if="${currentPage <= 5 || currentPage > totalPages - 4}">
+                              <div class="page-item" th:each="i: ${#numbers.sequence(1, 5)}">
+                                  <li class="page-item" th:classappend="${currentPage==i} ? 'active' : ''" aria-current="page" >
+                                      <th:block th:if="${#strings.contains(request,'profile')}">
+                                          <a class="page-link" th:href="@{'/homepage/profile/' +${postDetail.getId()} + '/' + ${page} + '/' + ${i}}">[[${i}]]</a>
+                                      </th:block>
+                                      <th:block th:if="${#strings.contains(request,'thematic')}">
+                                          <a class="page-link" th:href="@{'/homepage/thematic/' +${postDetail.getCategory()} + '/' +${postDetail.getId()} + '/' + ${page} + '/' + ${i}}">[[${i}]]</a>
+                                      </th:block>
+                                      <th:block th:if="${#strings.contains(request,'user')}">
+                                          <a class="page-link" th:href="@{'/homepage/user/' +${login} + '/' +${postDetail.getId()} + '/' + ${page} + '/' + ${i}}">[[${i}]]</a>
+                                      </th:block>
+                                      <th:block th:unless="${#strings.contains(request,'profile')} or
+                              ${#strings.contains(request,'thematic')} or
+                              ${#strings.contains(request,'user')}">
+                                          <a class="page-link" th:href="@{'/homepage/' +${postDetail.getId()} + '/' + ${page} + '/' + ${i}}">[[${i}]]</a>
+                                      </th:block>
+                                  </li>
+                              </div>
+                              <li class="page-item" th:classappend="${currentPage==6} ? 'active' : ''" aria-current="page" >
+                                  <th:block th:if="${#strings.contains(request,'profile')}">
+                                      <a class="page-link" th:href="@{'/homepage/profile/' +${postDetail.getId()} + '/' + ${page} + '/' + 6}">...</a>
+                                  </th:block>
+                                  <th:block th:if="${#strings.contains(request,'thematic')}">
+                                      <a class="page-link" th:href="@{'/homepage/thematic/' +${postDetail.getCategory()} + '/' +${postDetail.getId()} + '/' + ${page} + '/' + 6}">...</a>
+                                  </th:block>
+                                  <th:block th:if="${#strings.contains(request,'user')}">
+                                      <a class="page-link" th:href="@{'/homepage/user/' +${login} + '/' +${postDetail.getId()} + '/' + ${page} + '/' + 6}">...</a>
+                                  </th:block>
+                                  <th:block th:unless="${#strings.contains(request,'profile')} or
+                              ${#strings.contains(request,'thematic')} or
+                              ${#strings.contains(request,'user')}">
+                                      <a class="page-link" th:href="@{'/homepage/' +${postDetail.getId()} + '/' + ${page} + '/' + 6}">...</a>
+                                  </th:block>
+                              </li>
+
+                              <div class="page-item" th:each="i: ${#numbers.sequence(totalPages - 4, totalPages)}">
+                                  <li class="page-item" th:classappend="${currentPage==i} ? 'active' : ''" aria-current="page" >
+                                      <th:block th:if="${#strings.contains(request,'profile')}">
+                                          <a class="page-link" th:href="@{'/homepage/profile/' +${postDetail.getId()} + '/' + ${page} + '/' + ${i}}">[[${i}]]</a>
+                                      </th:block>
+                                      <th:block th:if="${#strings.contains(request,'thematic')}">
+                                          <a class="page-link" th:href="@{'/homepage/thematic/' +${postDetail.getCategory()} + '/' +${postDetail.getId()} + '/' + ${page} + '/' + ${i}}">[[${i}]]</a>
+                                      </th:block>
+                                      <th:block th:if="${#strings.contains(request,'user')}">
+                                          <a class="page-link" th:href="@{'/homepage/user/' +${login} + '/' +${postDetail.getId()} + '/' + ${page} + '/' + ${i}}">[[${i}]]</a>
+                                      </th:block>
+                                      <th:block th:unless="${#strings.contains(request,'profile')} or
+                              ${#strings.contains(request,'thematic')} or
+                              ${#strings.contains(request,'user')}">
+                                          <a class="page-link" th:href="@{'/homepage/' +${postDetail.getId()} + '/' + ${page} + '/' + ${i}}">[[${i}]]</a>
+                                      </th:block>
+                                  </li>
+                              </div>
+
+                          </th:block>
+
+                          <th:block th:if="${currentPage > 5 && currentPage < totalPages - 4}">
+                              <li class="page-item"  aria-current="page" >
+                                  <th:block th:if="${#strings.contains(request,'profile')}">
+                                      <a class="page-link" th:href="@{'/homepage/profile/' +${postDetail.getId()} + '/' + ${page} + '/' + ${currentPage - 5}}">...</a>
+                                  </th:block>
+                                  <th:block th:if="${#strings.contains(request,'thematic')}">
+                                      <a class="page-link" th:href="@{'/homepage/thematic/' +${postDetail.getCategory()} + '/' +${postDetail.getId()} + '/' + ${page} + '/' + ${currentPage - 5}}">...</a>
+                                  </th:block>
+                                  <th:block th:if="${#strings.contains(request,'user')}">
+                                      <a class="page-link" th:href="@{'/homepage/user/' +${login} + '/' +${postDetail.getId()} + '/' + ${page} + '/' + ${currentPage - 5}}">...</a>
+                                  </th:block>
+                                  <th:block th:unless="${#strings.contains(request,'profile')} or
+                              ${#strings.contains(request,'thematic')} or
+                              ${#strings.contains(request,'user')}">
+                                      <a class="page-link" th:href="@{'/homepage/' +${postDetail.getId()} + '/' + ${page} + '/' + ${currentPage - 5}}">...</a>
+                                  </th:block>
+                              </li>
+
+                              <div class="page-item" th:each="i: ${#numbers.sequence(currentPage - 4, currentPage + 4)}">
+                                  <li class="page-item" th:classappend="${currentPage==i} ? 'active' : ''" aria-current="page" >
+                                      <th:block th:if="${#strings.contains(request,'profile')}">
+                                          <a class="page-link" th:href="@{'/homepage/profile/' +${postDetail.getId()} + '/' + ${page} + '/' + ${i}}">[[${i}]]</a>
+                                      </th:block>
+                                      <th:block th:if="${#strings.contains(request,'thematic')}">
+                                          <a class="page-link" th:href="@{'/homepage/thematic/' +${postDetail.getCategory()} + '/' +${postDetail.getId()} + '/' + ${page} + '/' + ${i}}">[[${i}]]</a>
+                                      </th:block>
+                                      <th:block th:if="${#strings.contains(request,'user')}">
+                                          <a class="page-link" th:href="@{'/homepage/user/' +${login} + '/' +${postDetail.getId()} + '/' + ${page} + '/' + ${i}}">[[${i}]]</a>
+                                      </th:block>
+                                      <th:block th:unless="${#strings.contains(request,'profile')} or
+                              ${#strings.contains(request,'thematic')} or
+                              ${#strings.contains(request,'user')}">
+                                          <a class="page-link" th:href="@{'/homepage/' +${postDetail.getId()} + '/' + ${page} + '/' + ${i}}">[[${i}]]</a>
+                                      </th:block>
+                                  </li>
+                              </div>
+
+
+                              <li class="page-item"  aria-current="page" >
+                                  <th:block th:if="${#strings.contains(request,'profile')}">
+                                      <a class="page-link" th:href="@{'/homepage/profile/' +${postDetail.getId()} + '/' + ${page} + '/' + ${currentPage + 5}}">...</a>
+                                  </th:block>
+                                  <th:block th:if="${#strings.contains(request,'thematic')}">
+                                      <a class="page-link" th:href="@{'/homepage/thematic/' +${postDetail.getCategory()} + '/' +${postDetail.getId()} + '/' + ${page} + '/' + ${currentPage + 5}}">...</a>
+                                  </th:block>
+                                  <th:block th:if="${#strings.contains(request,'user')}">
+                                      <a class="page-link" th:href="@{'/homepage/user/' +${login} + '/' +${postDetail.getId()} + '/' + ${page} + '/' + ${currentPage + 5}}">...</a>
+                                  </th:block>
+                                  <th:block th:unless="${#strings.contains(request,'profile')} or
+                              ${#strings.contains(request,'thematic')} or
+                              ${#strings.contains(request,'user')}">
+                                      <a class="page-link" th:href="@{'/homepage/' +${postDetail.getId()} + '/' + ${page} + '/' + ${currentPage + 5}}">...</a>
+                                  </th:block>
+                              </li>
+                          </th:block>
+
+                      </th:block>
+
+                      <li th:class="${currentPage < totalPages ? 'page-item' : 'page-item disabled'}">
+                          <th:block th:if="${#strings.contains(request,'profile')}">
+                              <a class="page-link" th:href="@{'/homepage/profile/' +${postDetail.getId()} + '/' + ${page} + '/' + ${currentPage + 1}}">Next</a>
+                          </th:block>
+                          <th:block th:if="${#strings.contains(request,'thematic')}">
+                              <a class="page-link" th:href="@{'/homepage/thematic/' +${postDetail.getCategory()} + '/' +${postDetail.getId()} + '/' + ${page} + '/' + ${currentPage + 1}}">Next</a>
+                          </th:block>
+                          <th:block th:if="${#strings.contains(request,'user')}">
+                              <a class="page-link" th:href="@{'/homepage/user/' +${login} + '/' +${postDetail.getId()} + '/' + ${page} + '/' + ${currentPage + 1}}">Next</a>
+                          </th:block>
+                          <th:block th:unless="${#strings.contains(request,'profile')} or
+                              ${#strings.contains(request,'thematic')} or
+                              ${#strings.contains(request,'user')}">
+                              <a class="page-link" th:href="@{'/homepage/' +${postDetail.getId()} + '/' + ${page} + '/' + ${currentPage + 1}}">Next</a>
+                          </th:block>
+                      </li>
+                      <li th:class="${currentPage < totalPages ? 'page-item' : 'page-item disabled'}">
+                          <th:block th:if="${#strings.contains(request,'profile')}">
+                              <a class="page-link" th:href="@{'/homepage/profile/' +${postDetail.getId()} + '/' + ${page} + '/' + ${totalPages}}">Last</a>
+                          </th:block>
+                          <th:block th:if="${#strings.contains(request,'thematic')}">
+                              <a class="page-link" th:href="@{'/homepage/thematic/' +${postDetail.getCategory()} + '/' +${postDetail.getId()} + '/' + ${page} + '/' + ${totalPages}}">Last</a>
+                          </th:block>
+                          <th:block th:if="${#strings.contains(request,'user')}">
+                              <a class="page-link" th:href="@{'/homepage/user/' +${login} + '/' +${postDetail.getId()} + '/' + ${page} + '/' + ${totalPages}}">Last</a>
+                          </th:block>
+                          <th:block th:unless="${#strings.contains(request,'profile')} or
+                              ${#strings.contains(request,'thematic')} or
+                              ${#strings.contains(request,'user')}">
+                              <a class="page-link" th:href="@{'/homepage/' +${postDetail.getId()} + '/' + ${page} + '/' + ${totalPages}}">Last</a>
+                          </th:block>
+                      </li>
+                  </ul>
+              </nav>
+          </div>
+
+          </th:block>
+<!--        </div>-->
+<!--        </div>-->
+
+      </div>
+    </div>
+  </div>
+</div>
+<footer th:insert="blocks/homepageFooter :: footer"></footer>
+<!--<script th:src="@{/static/category-decoration.js}" type="text/javascript"></script>-->
+<script th:inline="javascript">
+  /*<![CDATA[*/
+
+  var id =  /*[[${postDetail.getId()}]]*/ 'default';
+  var a = document.getElementById('postCategory' + id);
+  var text = a.innerText;
+  console.log(text);
+  switch (text) {
+    case "World": a.classList.add("text-primary"); break;
+    case "U.S.": a.classList.add("text-secondary");break;
+    case "Technology":a.classList.add("text-success"); break;
+    case "Design":a.classList.add("text-danger"); break;
+    case "Business": a.classList.add("text-warning");break;
+    case "Culture":a.classList.add("text-info"); break;
+    case "Politics":a.classList.add("text-dark"); break;
+    case "Opinion":a.classList.add("text-body"); break;
+    case "Science":a.classList.add("text-muted"); break;
+    case "Health":a.classList.add("text-primary");break;
+    case "Style": a.classList.add("text-secondary");break;
+    case "Travel":a.classList.add("text-success"); break;
+  }
+  /*]]>*/
+</script>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    /*[# th:each="post: ${posts}"]*/
+    var postsId =  /*[[${post.getId()}]]*/ 'default';
+    var postsA = document.getElementById('postCategoryRight' + postsId);
+    var category = postsA.innerText;
+    console.log(category);
+    switch (category) {
+    case "World": postsA.classList.add("text-primary"); break;
+    case "U.S.": postsA.classList.add("text-secondary");break;
+    case "Technology":postsA.classList.add("text-success"); break;
+    case "Design":postsA.classList.add("text-danger"); break;
+    case "Business": postsA.classList.add("text-warning");break;
+    case "Culture":postsA.classList.add("text-info"); break;
+    case "Politics":postsA.classList.add("text-dark"); break;
+    case "Opinion":postsA.classList.add("text-body"); break;
+    case "Science":postsA.classList.add("text-muted"); break;
+    case "Health":postsA.classList.add("text-primary");break;
+    case "Style": postsA.classList.add("text-secondary");break;
+    case "Travel":postsA.classList.add("text-success"); break;
+    }
+    /*[/]*/
+    /*]]>*/
+</script>
+
+</body>
+</html>
