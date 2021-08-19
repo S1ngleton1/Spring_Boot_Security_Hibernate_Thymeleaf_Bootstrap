@@ -12,6 +12,7 @@ import com.spring.develop.registrationloginspring.validator.UserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -359,6 +360,7 @@ public class UserController {
             return "postDetail";
         }
     }
+
     @GetMapping("/homepage/{postID}/{page}/{pageNumber}")
     public String showPostDetailHome(@PathVariable(name = "postID") Long postId,
                                      @PathVariable(name = "page", required = false) int page,

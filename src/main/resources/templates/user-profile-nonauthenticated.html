@@ -155,7 +155,11 @@
                   <p th:text="${post.getShortDescription()}">ShortDescription</p>
                   <hr>
                   <div class="d-flex">
-                    <div class="p-2 flex-grow-1 "><a href="#"
+                    <div class="p-2 flex-grow-1 "><a th:href="@{/detail(postId=${post.getId()},
+                                                  page=${currentPage},
+                                                   pageNumber=1,
+                                                   wherefrom='profile',
+                                                   value = ${findUserByLogin.getLogin()})}"
                                                      class="d-inline-block text-primary">Continue
                       reading</a></div>
                   </div>

@@ -43,18 +43,6 @@ public class MainController {
     private static final int HOME_PAGE_SIZE = 4;
     private static final int POST_DETAIL_PAGE_SIZE = 2;
 
-
-//    @GetMapping("/")
-//    public String mainPage(Model model){
-//        // Prevent User Going Back to Login Page If Already Logged In - start
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        if (authentication == null || authentication instanceof AnonymousAuthenticationToken) {
-//            return mainPagePaginated(1,model);
-//        }
-//        String url = loginSuccessHandler.determineTargetUrl(authentication);
-//        // Prevent User Going Back to Login Page If Already Logged In - end
-//        return "redirect:" + url; //Redirect to user or admin page
-//    }
     @GetMapping("/")
     public String mainPagePaginated(@RequestParam(name = "page",required = false) Integer pageNumber,
                                     Model model){
@@ -180,6 +168,57 @@ public class MainController {
                 return "redirect:/";
             }
             return "thematic-page-nonauthenticated";
+        }
+        String url = loginSuccessHandler.determineTargetUrl(authentication);
+        // Prevent User Going Back to Login Page If Already Logged In - end
+        return "redirect:" + url; //Redirect to user or admin page
+    }
+
+    @GetMapping("/detail")
+    public String detailPost(@RequestParam(name = "postId") Long postId,
+                             @RequestParam(name = "page", required = false) Integer page,
+                             @RequestParam(name = "pageNumber", required = false) Integer pageNumber,
+                             @RequestParam(name = "wherefrom") String wherefrom,
+                             @RequestParam(name = "value", required = false) String value,
+                             Model model){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || authentication instanceof AnonymousAuthenticationToken) {
+            if (page == null) {
+                page = 1;
+            }
+            if (pageNumber == null) {
+                pageNumber = 1;
+            }
+            Post post = postRepository.findPostById(postId);
+            if (post == null) {
+                return "redirect:/";
+            }
+             if (page <= 0) {
+                 return "redirect:/";
+             }
+             Page<Post> pagePost = postService.findPaginatedExceptIdCategory(pageNumber, POST_DETAIL_PAGE_SIZE, post.getId(),post.getCategory());
+             List<Post> posts = pagePost.getContent();
+
+             model.addAttribute("totalPages", pagePost.getTotalPages());
+             if(pagePost.getTotalPages() == 0){
+                 pageNumber = 1;
+                 model.addAttribute("currentPage", pageNumber);
+             }
+             else {
+                 model.addAttribute("currentPage", pageNumber);
+             }
+             model.addAttribute("totalItems", pagePost.getTotalElements());
+             model.addAttribute("posts", posts);
+             if(value != null){
+                 model.addAttribute("value", value);
+             }
+             if (pagePost.getTotalPages() != 0 && pageNumber > pagePost.getTotalPages()) {
+                 return "redirect:/homepage";
+             }
+             model.addAttribute("postDetail", post);
+             model.addAttribute("page", page);
+             return "post-detail-nonauthenticated";
+
         }
         String url = loginSuccessHandler.determineTargetUrl(authentication);
         // Prevent User Going Back to Login Page If Already Logged In - end
