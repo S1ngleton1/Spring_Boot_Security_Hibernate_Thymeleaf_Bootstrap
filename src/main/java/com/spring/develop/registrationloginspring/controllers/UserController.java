@@ -111,6 +111,21 @@ public class UserController {
     }
         return "redirect:/login";
     }
+    @GetMapping("/homepage/about")
+    public String about(Model model){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+            User user = userRepository.findByEmail(authentication.getName());
+            if (user.getActivationCode() != null) {
+                model.addAttribute("error_message", "Confirm your activation code!");
+                return "redirect:/login";
+            } else {
+                model.addAttribute("user",user);
+                return "about-us";
+            }
+        }
+        return "redirect:/login";
+    }
 
     @GetMapping("/homepage/user/{userLogin}")
     public String showUser(@PathVariable(name = "userLogin") String login,

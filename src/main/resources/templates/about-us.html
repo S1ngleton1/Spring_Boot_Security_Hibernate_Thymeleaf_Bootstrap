@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>About us</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+        rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+        crossorigin="anonymous">
+</head>
+<body style="height: 100%">
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
+        integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
+        integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
+        crossorigin="anonymous"></script>
+
+<br>
+<div class="container" style="margin-bottom: 30px">
+  <div th:insert="blocks/homepageHeader :: homepageHeader"></div>
+
+
+  <div class="d-flex flex-column justify-content-center mt-5 pt-4">
+    <div class="align-self-center col-6">
+      <p style="font-size: 48pt; margin-top: -35px" class="text-center">Website "<i>Blog</i>"</p>
+      <p class="text-center">We are happy to show you a simple Blog site where you: </p>
+      <ul style="margin-left: 70px">
+        <li>can create your own unique article and share it with other users;</li>
+        <li>have the opportunity to edit or delete your article;</li>
+        <li>can view other articles of registered users and their accounts;</li>
+      </ul>
+      <hr>
+    </div>
+    <div class="align-self-center col-12">
+      <p class="text-center">
+        The site was written using the following technologies:
+        <a href="https://spring.io/projects/spring-boot" class="text-decoration-none text-secondary fw-bold ms-2">
+          &#183; Spring Boot
+        </a>
+        <a href="https://spring.io/projects/spring-security" class="text-decoration-none text-secondary fw-bold ms-2">
+          &#183; Spring Security
+        </a>
+        <a href="https://hibernate.org" class="text-decoration-none text-secondary fw-bold ms-2">
+          &#183; Hibernate
+        </a>
+        <a href="https://www.thymeleaf.org" class="text-decoration-none text-secondary fw-bold ms-2">
+          &#183; Thymeleaf
+        </a>
+        <a href="https://getbootstrap.com/docs/5.0/getting-started/introduction/" class="text-decoration-none text-secondary fw-bold ms-2">
+          &#183; Bootstrap 5
+        </a>
+      </p>
+    </div>
+
+
+
+  </div>
+
+
+</div>
+<footer style="position: absolute;
+bottom: 0;
+left: 0;
+right: 0;" th:insert="blocks/homepageFooter :: footer"></footer>
+<!--<header th:insert="blocks/footer :: footer"></header>-->
+</body>
+</html>

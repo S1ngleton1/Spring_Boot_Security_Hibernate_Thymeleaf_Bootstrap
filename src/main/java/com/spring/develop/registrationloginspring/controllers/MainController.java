@@ -83,6 +83,18 @@ public class MainController {
         // Prevent User Going Back to Login Page If Already Logged In - end
         return "redirect:" + url; //Redirect to user or admin page
     }
+    @GetMapping("/about")
+    public String about(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || authentication instanceof AnonymousAuthenticationToken) {
+
+            return "about-us-nonauthenticated";
+        }
+        String url = loginSuccessHandler.determineTargetUrl(authentication);
+        // Prevent User Going Back to Login Page If Already Logged In - end
+        return "redirect:" + url; //Redirect to user or admin page
+
+    }
 
     @GetMapping("/{userLogin}")
     public String nonAuthenticatedUserProfile(@PathVariable(name = "userLogin") String login,
