@@ -8,3 +8,4 @@ Technologies used: Spring Boot + Spring Security + Hibernate + Thymeleaf + Boots
 ![screenshot_5](results/edit_profile.PNG)
 ![screenshot_6](results/edit_post.PNG)
 ![screenshot_7](results/post_detail.PNG)
+![screenshot_7](results/about_us.PNG)
