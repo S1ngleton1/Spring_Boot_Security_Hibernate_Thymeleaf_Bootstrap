@@ -13,13 +13,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
-import javax.sql.DataSource;
-
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
-    @Autowired
-    private DataSource dataSource;
 
     @Autowired
     private UserService userService;
@@ -35,9 +31,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     public BCryptPasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
     }
-    //Стандартная и наиболее распространенная реализация - это DaoAuthenticationProvider,
-    // который извлекает сведения о пользователе из простого пользовательского DAO,
-    // доступного только для чтения, - UserDetailsService.
+
+//    to perform authentication
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider auth = new DaoAuthenticationProvider();
@@ -47,13 +42,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     }
 
     @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+    protected void configure(AuthenticationManagerBuilder auth) {
         auth.authenticationProvider(authenticationProvider());
-//        auth.jdbcAuthentication()
-//                .dataSource(dataSource)
-//                .passwordEncoder(passwordEncoder())
-//                .usersByUsernameQuery("select firstname, email, password from users where email=?")
-//                .authoritiesByUsernameQuery("SELECT u.email, r.name from users u inner join user_roles ur on u.id = ur.user_id inner join roles r on r.id = ur.role_id where email='a@gmail.com'");
     }
 
     @Override
@@ -74,8 +64,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                     .loginPage("/login")
                     .permitAll()
                     .successHandler(loginSuccessHandler) //Choosing a role for redirect
-//                    .usernameParameter("username")
-
                 .and()
                     .logout()
                     .invalidateHttpSession(true)

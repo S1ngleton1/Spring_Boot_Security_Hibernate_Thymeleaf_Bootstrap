@@ -30,40 +30,15 @@ public class UserServiceImpl implements UserService{
 
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
+
     @Autowired
     private UserRepository userRepository;
+
     @Autowired
     private RoleRepository roleRepository;
 
-
     @Autowired
     private MailSender mailSender;
-
-//    @Override
-//    public boolean saveUser(User user) {
-//        User userFromDb = userRepository.findByEmail(user.getEmail());
-//        if (userFromDb != null) {
-//            return false;
-//        }
-//        user.setPassword(passwordEncoder.encode(user.getPassword()));
-//        Set<Role> roles = new HashSet<>();
-//        roles.add(roleRepository.findRoleById(1L));//Get Role with ID = 1 long
-//        user.setRoles(roles);
-//        user.setActivationCode(UUID.randomUUID().toString());
-////        user.setRoles(new HashSet<>(Arrays.asList(roleRepository.getById(1L))));
-//        userRepository.save(user);
-//
-//        if (!StringUtils.isEmpty(user.getEmail())) {
-//            String message = String.format(
-//                    "Hello, %s %s! \n" +
-//                            "Welcome to Sweater. Please, visit next link: http://localhost:8080/registration/activate/%s",
-//                    user.getFirstname(), user.getLastname(),
-//                    user.getActivationCode()
-//            );
-//            mailSender.send(user.getEmail(), "Activation code", message);
-//        }
-//        return true;
-//    }
 
     @Override
     public User saveUser(User user) {
@@ -81,13 +56,11 @@ public class UserServiceImpl implements UserService{
         roles.add(roleRepository.findRoleById(1L));//Get Role with ID = 1 long
         user.setRoles(roles);
         user.setActivationCode(UUID.randomUUID().toString());
-//        user.setRoles(new HashSet<>(Arrays.asList(roleRepository.getById(1L))));
-//        userRepository.save(user);
 
         if (!StringUtils.isEmpty(user.getEmail())) {
             String message = String.format(
                     "Hello, %s %s! \n" +
-                            "Welcome to Sweater. Please, visit next link: http://localhost:8080/registration/activate/%s",
+                            "Welcome to our amazing website Blog. Please, visit next link to confirm registration: http://localhost:8080/registration/activate/%s",
                     user.getFirstname(), user.getLastname(),
                     user.getActivationCode()
             );
@@ -102,16 +75,6 @@ public class UserServiceImpl implements UserService{
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return authentication;
     }
-
-
-//        User user = new User(
-//                userRegistrationDto.getEmail(),
-//                userRegistrationDto.getFirstName(),
-//                userRegistrationDto.getLastName(),
-//                passwordEncoder.encode(userRegistrationDto.getPassword()),
-//                Arrays.asList(new Role("ROLE_USER")));
-//
-//        return userRepository.save(user);
 
     @Override
     public boolean activateUser(String code) {
@@ -160,26 +123,19 @@ public class UserServiceImpl implements UserService{
     }
 
 
-    //Позволяет получить из источника данных объект пользователя и сформировать из
-    // него объект UserDetails который будет использоваться контекстом Spring Security.
+    //Lets you get a user object from a data source and form a
+    // UserDetails object from it to be used by the Spring Security context.
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         User user = userRepository.findByEmailOrLogin(email,email);
-//        User user = userRepository.findByEmail(email);
-//        User user2 = userRepository.findByFirstname(email);
-//        if(user == null){
-//            throw new UsernameNotFoundException("Invalid username or password");
-//        }
+        if(user == null){
+            throw new UsernameNotFoundException("Invalid username or password");
+        }
         Set<GrantedAuthority> grantedAuthoritySet = new HashSet<>();
         for(Role role: user.getRoles()){
             grantedAuthoritySet.add(new SimpleGrantedAuthority(role.getName()));
         }
         return new org.springframework.security.core.userdetails.User(user.getEmail(),user.getPassword(),grantedAuthoritySet);
     }
-
-
-
-
-
 }

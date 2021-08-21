@@ -24,8 +24,6 @@ public class PostServiceImpl implements PostService{
     private UserService userService;
     @Override
     public Post savePost(Post newPost) {
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        User user = userRepository.findByEmail(authentication.getName());
         User user = userService.getAuthenticatedUser();
         Set<User> users = new HashSet<>();
         users.add(userRepository.findUserById(user.getId()));//Get User ID

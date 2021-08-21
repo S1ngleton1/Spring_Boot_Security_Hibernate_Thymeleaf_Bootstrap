@@ -22,13 +22,6 @@ public class MailConfig {
     @Value("${spring.mail.port}")
     private int port;
 
-//    @Value("${spring.mail.properties.mail.smtp.auth}")
-//    private String auth;
-//    @Value("$spring.mail.properties.mail.smtp.starttls.enable}")
-//    private String enable;
-//
-//    @Value("${mail.debug}")
-//    private String debug;
     @Bean
     public JavaMailSender getMailSender(){
         JavaMailSenderImpl javaMailSender = new JavaMailSenderImpl();
@@ -44,13 +37,6 @@ public class MailConfig {
         properties.put("mail.smtp.starttls.enable", "true");
         properties.put("mail.debug", "true");
         properties.put("mail.smtp.ssl.trust", "smtp.gmail.com");
-
-
-//        properties.setProperty("spring.mail.properties.mail.smtp.auth", auth);
-//        properties.setProperty("spring.mail.properties.mail.smtp.starttls.enable", enable);
-//
-//
-//        properties.setProperty("mail.debug", debug);
 
         return javaMailSender;
     }
